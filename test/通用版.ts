@@ -10,7 +10,8 @@ const arr = mergeArray(usersInfo, scoresInfo, {
     targetKey: "uid",
     sKMap: {
         "score": "data.score",
-        "comments": "data.comments"
+        "comments": "data.comments",
+        "stars": "stars"
     }
 });
 

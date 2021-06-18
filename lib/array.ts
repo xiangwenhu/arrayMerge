@@ -145,7 +145,7 @@ export function mergeArray<S = any, T = any, R = any>(targetArr: T[] = [], sourc
         stepIter.next()
     }
 
-    console.log(`mergeArray:: sourceArr(${sourceLen}), 统计：遍历次数${walkCounts}, 命中次数${hitCounts}`);
+    console.log(`mergeArray:: targetArr(${targetLen}), sourceArr(${sourceLen}), 统计：遍历次数${walkCounts}, 命中次数${hitCounts}`);
     return resultArr as any[];
 
 }

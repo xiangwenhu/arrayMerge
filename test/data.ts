@@ -1,4 +1,4 @@
-export const usersInfo = Array.from({ length: 10 }, (val, index) => {
+export const usersInfo = Array.from({ length: 3 }, (val, index) => {
     return {
         uid: `${index + 1}`,
         name: `user-name-${index}`,
@@ -7,9 +7,9 @@ export const usersInfo = Array.from({ length: 10 }, (val, index) => {
     }
 });
 
-export const scoresInfo = Array.from({ length: 8 }, (val, index) => {
+export const scoresInfo = Array.from({ length: 2 }, (val, index) => {
     return {
-        uid: `${index + 1}`,
+        uid: `${index + 2}`,
         score: ~~(Math.random() * 10000),
         comments: ~~(Math.random() * 10000),
         stars: ~~(Math.random() * 1000)
