@@ -1,11 +1,22 @@
 {
-  "name": "arraymerge",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "array-merge",
+  "version": "0.0.1",
+  "description": "不问属性路径深浅，顺序遍历，倒叙遍历都支持，高效合并数据方案",
+  "main": "dist/index/index.js",
+  "types": "./dist/index.d.ts",
+  "typing": "./dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "pack": "npm run build && npm pack",
+    "pub": "npm run build && npm publish"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "xiangwen hu",
+  "license": "ISC",
+  "contributors": [
+    "xiangwenhu (https://github.com/xiangwenhu)"
+  ],
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  }
 }

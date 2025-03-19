@@ -26,3 +26,7 @@ var arr = mergeArray(arr1, arr2, {
 
 console.log("arr", arr);
 ```
+
+
+## TODO::
+- [ ] 自动识别数组长度，长的转为record，短的遍历，长的转为record ?
