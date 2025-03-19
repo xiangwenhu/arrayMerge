@@ -29,4 +29,5 @@ console.log("arr", arr);
 
 
 ## TODO::
+- [ ] 对象属性，如果未指定keyMap，重名属性?
 - [ ] 自动识别数组长度，长的转为record，短的遍历，长的转为record ?

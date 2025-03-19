@@ -1,11 +1,12 @@
 import { isPropertyKey } from ".";
-import { setProperty } from "./object";
+import { getProperty, setProperty } from "./object";
 
 export function arrayToRecord<T extends Record<PropertyKey, T>>(arr: T[], getKeyFun: (data: T) => PropertyKey) {
     const result: T = arr.reduce((obj: Record<PropertyKey, T>, cur: T) => {
         const key = getKeyFun(cur);
         if (isPropertyKey(key)) {
-            setProperty(obj, key, cur);
+            const keyValue = getProperty(cur, key);
+            setProperty(obj, keyValue, cur);
         }
         return obj;
     }, Object.create(null));

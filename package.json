@@ -1,5 +1,5 @@
 {
-  "name": "array-merge",
+  "name": "array-object-merge",
   "version": "0.0.1",
   "description": "不问属性路径深浅，顺序遍历，倒叙遍历都支持，高效合并数据方案",
   "main": "dist/index/index.js",

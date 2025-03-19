@@ -20,7 +20,15 @@ export interface MergeOptions<S = any, T = any> {
     targetKey?: PropertyKey | ((data: T) => PropertyKey);
 
     /**
-     * 键值映射关系
+     * 源对象的键值映射关系
      */
-    keyMap?: Record<PropertyKey, PropertyKey>;
+    sourceKeyMap?: Record<PropertyKey, PropertyKey>;
+    /**
+     * 最大遍历数量
+     */
+    maxWalkCount?: number;
+    /**
+     * 启用日志
+     */
+    enableLog?: boolean
 }

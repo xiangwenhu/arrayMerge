@@ -44,20 +44,21 @@ export function getProperty<T extends ObjectRecord>(object: T, property: Propert
 
     let index = -1, length = path.length;
 
+    let result = object;
     // Ensure the loop is entered when path is empty.
     if (!length) {
         length = 1;
-        object = undefined;
+        result = undefined;
     }
     while (++index < length) {
-        var value = object == null ? undefined : object[toKey(path[index])];
+        var value = result == null ? undefined : result[toKey(path[index])];
         if (value === undefined) {
             index = length;
             value = defaultValue;
         }
-        object = isFunction(value) ? value.call(object) : value;
+        result = isFunction(value) ? value.call(result) : value;
     }
-    return object;
+    return result;
 }
 
 /**
@@ -74,22 +75,21 @@ export function setProperty(object: Object, property: PropertyKey, value: any = 
     }
 
     if (isNumber(property) || isSymbol(property)) {
-        return baseAssignValue(value, key, value)
+        return baseAssignValue(object, property, value)
     }
 
     const path = stringToPath(property);
 
-    var index = -1,
-        length = path.length,
-        lastIndex = length - 1,
-        nested = object;
+    const length = path.length, lastIndex = length - 1;
+
+    let result = object, index = -1, nested = result;
 
     while (nested != null && ++index < length) {
-        var key = toKey(path[index]),
+        let key = toKey(path[index]),
             newValue = value;
 
         if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-            return object;
+            return result;
         }
 
         if (index != lastIndex) {
@@ -104,24 +104,26 @@ export function setProperty(object: Object, property: PropertyKey, value: any = 
         baseAssignValue(nested, key, newValue);
         nested = nested[key];
     }
-    return object;
+    return result;
 }
 
 /**
  * 提取属性生成新的对象
  */
-function extractObject(object: Object, kMap: Record<PropertyKey, PropertyKey> = undefined) {
+function extractObject(object: Object, keyMap: Record<PropertyKey, PropertyKey> = undefined) {
 
     if (!isObject(object)) {
         return object;
     }
 
     const ret = Object.create(null);
-    if (kMap == null) {
+    // 这种情况，不会复制原型上的属性
+    if (keyMap === null || keyMap === undefined) {
         return { ...ret, ...object }
     }
-    Object.keys(kMap).reduce((obj: Object, key: PropertyKey) => {
-        setProperty(obj, kMap[key], getProperty(object, key))
+    // 会取原型上的属性
+    Object.keys(keyMap).reduce((obj: Object, key: PropertyKey) => {
+        setProperty(obj, keyMap[key], getProperty(object, key))
         return obj;
     }, ret);
 

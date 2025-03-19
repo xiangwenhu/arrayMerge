@@ -7,7 +7,9 @@ const DEFAULT_MERGE_OPTIONS: MergeOptions = {
     sourceKey: "id",
     targetKey: undefined,
     desc: true,
-    keyMap: undefined,
+    sourceKeyMap: undefined,
+    maxWalkCount: 1000,
+    enableLog: false
 }
 
 /**
@@ -18,7 +20,7 @@ const DEFAULT_MERGE_OPTIONS: MergeOptions = {
  * @param desc 
  * @returns 
  */
-function getStepIter(min: number, max: number, desc: boolean) {
+function getIterator(min: number, max: number, desc: boolean) {
 
     let start = desc ? max : min;
     let end = desc ? min : max;
@@ -33,7 +35,6 @@ function getStepIter(min: number, max: number, desc: boolean) {
             },
             next() {
                 return --start
-
             }
         }
     }
@@ -50,9 +51,6 @@ function getStepIter(min: number, max: number, desc: boolean) {
     }
 }
 
-const MAX_WALK_COUNT = 10000;
-
-
 /**
  * 合并数组生成新的数组
  * @param targetArr 目标数组
@@ -63,7 +61,7 @@ const MAX_WALK_COUNT = 10000;
  * @param options.keyMap  源复制map关系
  * @returns 
  */
-export function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>(targetArr: T[] = [], sourceArr: S[] = [], options: MergeOptions<S, T> = DEFAULT_MERGE_OPTIONS): R[] {
+export function mergeArrayObjects<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>(targetArr: T[] = [], sourceArr: S[] = [], options: MergeOptions<S, T> = DEFAULT_MERGE_OPTIONS): R[] {
 
     // 有一个不是数组
     if (!Array.isArray(sourceArr) || !Array.isArray(targetArr)) {
@@ -92,39 +90,34 @@ export function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>
 
     const sRecord = arrayToRecord(sourceArr as Record<PropertyKey, any>[], getSourceKeyFn);
 
-    const { desc, keyMap } = opt;
+    const { desc, sourceKeyMap: keyMap, maxWalkCount, enableLog } = opt;
 
-    const sourceLen = sourceArr.length;
-    let hitCounts = 0;
-    let walkCounts = 0;
+    const sourceLen = sourceArr.length, targetLen = targetArr.length;
+    let hitCounts = 0, walkCounts = 0, resultArr = [], tempTItem;
 
-    let resultArr = [];
-    const targetLen = targetArr.length;
-    let tempTItem;
+    const iterator = getIterator(0, targetLen - 1, desc);
 
-    const stepIter = getStepIter(0, targetLen - 1, desc);
+    while (iterator.hasNext()) {
 
-    while (stepIter.hasNext()) {
-
-        const index = stepIter.current;
-
+        const index = iterator.current;
         walkCounts++
 
-        if (walkCounts > MAX_WALK_COUNT) {
-            console.error(`mergeArray 遍历次数超过最大遍历次数 ${MAX_WALK_COUNT}, 终止遍历，请检查程序逻辑`);
+        if (walkCounts > maxWalkCount) {
+            console.error(`mergeArray: 遍历次数超过最大遍历次数 ${maxWalkCount}, 终止遍历，请检查程序逻辑`);
             break;
         }
 
         tempTItem = targetArr[index];
-
         // 目标值
         const tKey = getTargetKeyFn(tempTItem);
 
+        const tKeyValue = getProperty(tempTItem, tKey);
         // 通过tKey从sRecord查找
-        const tempSItem = getProperty(sRecord, tKey);
+        const tempSItem = getProperty(sRecord, tKeyValue);
 
         if (!isPropertyKey(tKey) || tempSItem == undefined) {
-            stepIter.next()
+            resultArr[index] = tempTItem;
+            iterator.next()
             continue;
         }
         resultArr[index] = mergeObject(tempTItem, tempSItem, undefined, keyMap);
@@ -132,10 +125,10 @@ export function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>
         if (hitCounts >= sourceLen) {
             break;
         }
-
-        stepIter.next()
+        iterator.next()
     }
-
-    console.log(`mergeArray:: sourceArr(${sourceLen}), 统计：遍历次数${walkCounts}, 命中次数${hitCounts}`);
-    return resultArr as any[];
+    if (enableLog) {
+        console.log(`mergeArray:: sourceArr(${sourceLen}), 统计：遍历次数${walkCounts}, 命中次数${hitCounts}`);
+    }
+    return resultArr as R[];
 }

@@ -1,6 +1,6 @@
 import  * as  array from "../src";
 
-const  { mergeArray} = array;
+const  { mergeArrayObjects } = array;
 
 var arr1 = [{
     p1:1,
@@ -12,7 +12,7 @@ var arr2 = [{
     p2:2
 }]
 
-var arr = mergeArray(arr1, arr2, {
+var arr = mergeArrayObjects(arr1, arr2, {
     sourceKey: "key2",
     targetKey: "key",
 });
