@@ -69,11 +69,17 @@ export function getPropertyByKeys<T extends ObjectRecord>(object: T, keys: Prope
     }
 
     let result = object;
-    for (let i = 0; i < keys.length; i++) {
-        result = getProperty(result, keys[i])
-        if (!isObject(result)) return defaultValue
+    const len = keys.length;
+    for (let index = 0; index < len; index++) {
+        result = getProperty(result, keys[index])
+        // 不是最后一个
+        if (index != len - 1) {
+            // 不是对象，直接返回
+            if (!isObject(result)) return defaultValue
+            continue;
+        }
     }
-    return result;
+    return result === undefined ? defaultValue : result;
 }
 
 
@@ -129,17 +135,21 @@ export function setPropertyByKeys<T extends ObjectRecord>(object: T, keys: Prope
     }
     const result = object, len = keys.length;
     let nested: any = object, objValue: any;
-    for (let i = 0; i < len; i++) {
-        const key = keys[i];
-        if (i === len - 1) {
+    for (let index = 0; index < len; index++) {
+        const key = keys[index];
+
+
+        if (index === len - 1) { // 最后一个，直接设值
             setProperty(nested, key, value)
         } else {
+            // 取值
             objValue = getProperty(nested, key)
-            if (isObject(objValue)) {
+            if (isObject(objValue)) { // 是对象，继续
                 nested = objValue;
                 continue;
             } else {
-                const val = (isIndex(key) ? [] : {});
+                // 不是对象，判断下一个key的是不是索引，如果是创建数组，反之创建对象
+                const val = (isIndex(keys[index + 1]) ? [] : {});
                 setProperty(nested, key, val)
                 nested = val;
             }
@@ -166,7 +176,9 @@ function extractObject(object: Object, mapping: KeyMappingItem[] | undefined = u
     for (let i = 0; i < mapping.length; i++) {
         const mappingItem = mapping[i];
         const sKey = mappingItem[0];
+        const tKey = mappingItem[1];
         const val = getPropertyByKeys(object, Array.isArray(sKey) ? sKey : [sKey]);
+        setPropertyByKeys(ret, Array.isArray(tKey) ? tKey : [tKey], val)
     }
     return ret;
 }

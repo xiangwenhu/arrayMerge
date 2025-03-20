@@ -12,7 +12,7 @@ const arr = mergeArrayObjects(usersInfo, scoresInfo, {
     enableLog: true,
     // sourceKeyMap: undefined,
     sourceKeyMapping: [
-        ["score", symbolScore],
+        ["score", ["a.d.0", Symbol.for("a")]],
         ["comments", "data.comments"],
         ["stars", "stars"]
     ]
