@@ -5,6 +5,8 @@ export interface GetKeyFunction {
 }
 
 
+export type KeyMappingItem = [PropertyKey | PropertyKey[], PropertyKey | PropertyKey[]]
+
 export interface MergeOptions<S = any, T = any> {
     /**
      * 降序
@@ -22,7 +24,7 @@ export interface MergeOptions<S = any, T = any> {
     /**
      * 源对象的键值映射关系
      */
-    sourceKeyMap?: Record<PropertyKey, PropertyKey>;
+    sourceKeyMapping?: KeyMappingItem[];
     /**
      * 最大遍历数量
      */

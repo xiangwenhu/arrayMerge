@@ -5,14 +5,17 @@ import * as data from "./data";
 const { usersInfo, scoresInfo } = data;
 
 
+const symbolScore = Symbol.for("score")
+
 const arr = mergeArrayObjects(usersInfo, scoresInfo, {
     sourceKey: "uid",
-    sourceKeyMap: undefined,
-    // sourceKeyMap: {
-    //     "score": "data.score",
-    //     "comments": "data.comments",
-    //     "stars": "stars"
-    // }
+    enableLog: true,
+    // sourceKeyMap: undefined,
+    sourceKeyMapping: [
+        ["score", symbolScore],
+        ["comments", "data.comments"],
+        ["stars", "stars"]
+    ]
 });
 
 console.log("arr", arr);

@@ -29,5 +29,15 @@ console.log("arr", arr);
 
 
 ## TODO::
-- [ ] 对象属性，如果未指定keyMap，重名属性?
+- [x] 对象属性重名属性的情况 
+    * 指定 sourceKeyMap 就是只转换指定的属性, 会覆盖
+    * 未设置 sourceKeyMap 全部转换，会覆盖
+- [ ] 支持多级属性映射，包含Symbol
+```typescript
+const obj = {};
+setPropertyByKeys(obj, [Symbol.for("a"), "ccc.dd"], 10)
+console.log(obj);
+
+// { [Symbol(a)]: { ccc: { dd: 10 } } }
+```
 - [ ] 自动识别数组长度，长的转为record，短的遍历，长的转为record ?

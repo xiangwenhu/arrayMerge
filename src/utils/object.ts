@@ -1,4 +1,4 @@
-import { ObjectRecord } from "src/types";
+import { KeyMappingItem, ObjectRecord } from "src/types";
 import { isFunction, isIndex, isNumber, isObject, isSymbol, toKey } from ".";
 import { stringToPath } from "./string"
 
@@ -61,6 +61,22 @@ export function getProperty<T extends ObjectRecord>(object: T, property: Propert
     return result;
 }
 
+
+
+export function getPropertyByKeys<T extends ObjectRecord>(object: T, keys: PropertyKey[], defaultValue: any = undefined) {
+    if (!isObject(object)) {
+        return defaultValue;
+    }
+
+    let result = object;
+    for (let i = 0; i < keys.length; i++) {
+        result = getProperty(result, keys[i])
+        if (!isObject(result)) return defaultValue
+    }
+    return result;
+}
+
+
 /**
  * 设置属性值
  * @param obj 
@@ -107,10 +123,35 @@ export function setProperty(object: Object, property: PropertyKey, value: any = 
     return result;
 }
 
+export function setPropertyByKeys<T extends ObjectRecord>(object: T, keys: PropertyKey[], value: any = undefined) {
+    if (!isObject(object)) {
+        return object;
+    }
+    const result = object, len = keys.length;
+    let nested: any = object, objValue: any;
+    for (let i = 0; i < len; i++) {
+        const key = keys[i];
+        if (i === len - 1) {
+            setProperty(nested, key, value)
+        } else {
+            objValue = getProperty(nested, key)
+            if (isObject(objValue)) {
+                nested = objValue;
+                continue;
+            } else {
+                const val = (isIndex(key) ? [] : {});
+                setProperty(nested, key, val)
+                nested = val;
+            }
+        }
+    }
+    return result;
+}
+
 /**
  * 提取属性生成新的对象
  */
-function extractObject(object: Object, keyMap: Record<PropertyKey, PropertyKey> = undefined) {
+function extractObject(object: Object, mapping: KeyMappingItem[] | undefined = undefined,) {
 
     if (!isObject(object)) {
         return object;
@@ -118,15 +159,15 @@ function extractObject(object: Object, keyMap: Record<PropertyKey, PropertyKey> 
 
     const ret = Object.create(null);
     // 这种情况，不会复制原型上的属性
-    if (keyMap === null || keyMap === undefined) {
+    if (!Array.isArray(mapping)) {
         return { ...ret, ...object }
     }
-    // 会取原型上的属性
-    Object.keys(keyMap).reduce((obj: Object, key: PropertyKey) => {
-        setProperty(obj, keyMap[key], getProperty(object, key))
-        return obj;
-    }, ret);
 
+    for (let i = 0; i < mapping.length; i++) {
+        const mappingItem = mapping[i];
+        const sKey = mappingItem[0];
+        const val = getPropertyByKeys(object, Array.isArray(sKey) ? sKey : [sKey]);
+    }
     return ret;
 }
 
@@ -135,22 +176,22 @@ function extractObject(object: Object, keyMap: Record<PropertyKey, PropertyKey> 
  * 合并对象生成新的对象
  * @param obj1 
  * @param obj2 
- * @param ob1KMap 
- * @param ob2KMap 
+ * @param mapping 
+ * @param mapping 
  * @returns 
  */
 export function mergeObject<T = any, S = any, R = any>(
     obj1: T,
     obj2: S,
-    ob1KMap: Record<PropertyKey, PropertyKey> = undefined,
-    ob2KMap: Record<PropertyKey, PropertyKey> = undefined
+    obj1Mapping: KeyMappingItem[] | undefined = undefined,
+    obj2Mapping: KeyMappingItem[] | undefined = undefined
 ): R {
 
     const ret = Object.create(null);
 
-    Object.assign(ret, extractObject(obj1, ob1KMap));
+    Object.assign(ret, extractObject(obj1, obj1Mapping));
 
-    Object.assign(ret, extractObject(obj2, ob2KMap));
+    Object.assign(ret, extractObject(obj2, obj2Mapping));
 
     return ret;
 }

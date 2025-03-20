@@ -1,6 +1,6 @@
-export const usersInfo = Array.from({ length:  2 }, (val, index) => {
+export const usersInfo = Array.from({ length: 5 }, (val, index) => {
     return {
-        uid: `${index + 1 }`,
+        uid: `${index + 1}`,
         index: index,
         name: `user-name-${index}`,
         age: index + 10,
@@ -10,7 +10,7 @@ export const usersInfo = Array.from({ length:  2 }, (val, index) => {
 
 export const scoresInfo = Array.from({ length: 2 }, (val, index) => {
     return {
-        uid: `${index + 2}`,
+        uid: `${index * 2}`,
         index: index,
         score: ~~(Math.random() * 10000),
         comments: ~~(Math.random() * 10000),

@@ -7,7 +7,7 @@ const DEFAULT_MERGE_OPTIONS: MergeOptions = {
     sourceKey: "id",
     targetKey: undefined,
     desc: true,
-    sourceKeyMap: undefined,
+    sourceKeyMapping: undefined,
     maxWalkCount: 1000,
     enableLog: false
 }
@@ -62,35 +62,26 @@ function getIterator(min: number, max: number, desc: boolean) {
  * @returns 
  */
 export function mergeArrayObjects<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>(targetArr: T[] = [], sourceArr: S[] = [], options: MergeOptions<S, T> = DEFAULT_MERGE_OPTIONS): R[] {
-
     // 有一个不是数组
     if (!Array.isArray(sourceArr) || !Array.isArray(targetArr)) {
         return targetArr as any;
     }
 
-    const opt: MergeOptions = { ...DEFAULT_MERGE_OPTIONS, ...options };
+    let { targetKey, sourceKey, enableLog, desc, sourceKeyMapping, maxWalkCount }: MergeOptions = { ...DEFAULT_MERGE_OPTIONS, ...options };
 
     if (!isPropertyKey(options.sourceKey) && !isFunction(options.sourceKey)) {
         console.error("无效的sourceKey");
         return targetArr as any[];
     }
 
-    let { targetKey, sourceKey } = opt;
     if (!isPropertyKey(targetKey)) {
-        targetKey = opt.sourceKey;
+        targetKey = sourceKey;
     }
 
-    const getSourceKeyFn: GetKeyFunction = isFunction(sourceKey) ?
-        sourceKey as GetKeyFunction :
-        (() => sourceKey) as GetKeyFunction;
-
-    const getTargetKeyFn: GetKeyFunction = isFunction(targetKey) ?
-        opt.targetKey as GetKeyFunction :
-        (() => targetKey) as GetKeyFunction
+    const getSourceKeyFn: GetKeyFunction = (isFunction(sourceKey) ? sourceKey : () => sourceKey) as GetKeyFunction;
+    const getTargetKeyFn: GetKeyFunction = (isFunction(targetKey) ? targetKey : () => targetKey) as GetKeyFunction
 
     const sRecord = arrayToRecord(sourceArr as Record<PropertyKey, any>[], getSourceKeyFn);
-
-    const { desc, sourceKeyMap: keyMap, maxWalkCount, enableLog } = opt;
 
     const sourceLen = sourceArr.length, targetLen = targetArr.length;
     let hitCounts = 0, walkCounts = 0, resultArr = [], tempTItem;
@@ -120,7 +111,7 @@ export function mergeArrayObjects<S = ObjectRecord, T = ObjectRecord, R = Object
             iterator.next()
             continue;
         }
-        resultArr[index] = mergeObject(tempTItem, tempSItem, undefined, keyMap);
+        resultArr[index] = mergeObject(tempTItem, tempSItem, undefined, sourceKeyMapping);
         hitCounts++
         if (hitCounts >= sourceLen) {
             break;
