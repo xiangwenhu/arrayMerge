@@ -12,7 +12,7 @@ export const usersInfo = Array.from({ length: 5 }, (val, index) => {
 
 const symbolUid = Symbol.for("uid");
 
-export const scoresInfo = Array.from({ length: 2 }, (val, index) => {
+export const scoresInfo = Array.from({ length: 1 }, (val, index) => {
     return {
         [symbolUid]: `${index * 2}`,
         index: index,

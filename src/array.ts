@@ -1,15 +1,18 @@
-import { GetKeyFunction, KeyMappingItem, MergeArrayOptions, ObjectRecord, SourceKeyMapping } from "./types";
-import { isFunction, isObject, isPropertyKey, isValidKeyOrPaths, toMappingItemList } from "./utils";
+import { MergeBaseClass } from "./MergeBaseClass";
+import { mergeObject } from "./object";
+import { GetKeyFunction, MergeArrayOptions, ObjectRecord } from "./types";
+import { isFunction, isPropertyKey, isValidKeyOrPaths, toMappingItemList } from "./utils";
 import { arrayToRecord } from "./utils/array";
-import { getProperty, mergeObject } from "./utils/object";
+import { getProperty } from "./utils/object";
 
 const DEFAULT_MERGE_OPTIONS: MergeArrayOptions = {
     sourceKey: "id",
     targetKey: undefined,
-    desc: true,
+    desc: false,
     sourceKeyMapping: undefined,
     maxWalkCount: 1000,
-    enableLog: false
+    enableLog: false,
+    newItem: false
 }
 
 /**
@@ -56,10 +59,7 @@ function getIterator(min: number, max: number, desc: boolean) {
  * 合并数组生成新的数组
  * @param targetArr 目标数组
  * @param sourceArr 需要被合并的数组
- * @param options.desc  是否是从后往前遍历
- * @param options.sourceKey  源数组对象的key
- * @param options.targetKey  目标数组对象的key
- * @param options.keyMap  源复制map关系
+ * @param options   选项
  * @returns 
  */
 export function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>(targetArr: T[] = [], sourceArr: S[] = [], options: MergeArrayOptions<S, T> = DEFAULT_MERGE_OPTIONS): R[] {
@@ -112,9 +112,15 @@ export function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>
         const tKey = getTargetKeyFn(tempTItem);
 
         const tKeyValue = getProperty(tempTItem, tKey);
+
+        if (!isPropertyKey(tKeyValue)) {
+            resultArr[index] = tempTItem;
+            iterator.next()
+            continue;
+        }
+
         // 通过tKey从sRecord查找
         const tempSItem = getProperty(sRecord, tKeyValue);
-
 
         if (!isPropertyKey(tKey) || tempSItem == undefined) {
             resultArr[index] = tempTItem;
@@ -124,12 +130,28 @@ export function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>
         resultArr[index] = mergeObject(tempTItem, tempSItem, mapping);
         hitCounts++
         if (hitCounts >= sourceLen) {
-            break;
+            console.log(`mergeArray:: sourceArr (${sourceLen}) 已遍历完, 直接复制第${index + 1}项`);
+            resultArr[index] = tempTItem;
+            iterator.next()
+            continue;
         }
         iterator.next()
     }
     if (enableLog) {
-        console.log(`mergeArray:: sourceArr(${sourceLen}), 统计：遍历次数${walkCounts}, 命中次数${hitCounts}`);
+        console.log(`mergeArray:: targetArr (${targetLen}), 统计：遍历次数${walkCounts}, 命中次数${hitCounts}`);
     }
     return resultArr as R[];
+}
+
+/**
+ * 合并多个数组的HOC
+ * @param array 
+ * @returns 
+ */
+export function mergeArrayHOC(array: any[]) {
+    const hoc = new MergeBaseClass<Object[], MergeArrayOptions>({
+        mergeMethod: mergeArray
+    });
+    hoc.push(array);
+    return hoc
 }

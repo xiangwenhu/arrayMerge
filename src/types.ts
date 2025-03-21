@@ -28,11 +28,11 @@ export interface MergeArrayOptions<S = any, T = any> {
      */
     desc?: boolean;
     /**
-     * 源键
+     * 源键, 默认值 id
      */
-    sourceKey: PropertyKeyOrPaths | ((data: S) => PropertyKeyOrPaths);
+    sourceKey?: PropertyKeyOrPaths | ((data: S) => PropertyKeyOrPaths);
     /**
-     * 目标键
+     * 目标键, 如果未设置，等于 sourceKey
      */
     targetKey?: PropertyKeyOrPaths | ((data: T) => PropertyKeyOrPaths);
 
@@ -41,7 +41,7 @@ export interface MergeArrayOptions<S = any, T = any> {
      */
     sourceKeyMapping?: SourceKeyMapping;
     /**
-     * 最大遍历数量
+     * 最大遍历数量, 默认值 1000
      */
     maxWalkCount?: number;
     /**
@@ -49,7 +49,14 @@ export interface MergeArrayOptions<S = any, T = any> {
      */
     enableLog?: boolean;
     /**
-     * 是否创建的对象，而不是直接更改targetArr上的对象
+     * 是否创建的对象，而不是直接更改targetArr上的对象， 默认值 false
      */
     newItem?: boolean;
+}
+
+
+export type MergeObjectHocItem = [Object, SourceKeyMapping | undefined]
+
+export interface MergeBaseClassOptions {
+    mergeMethod: Function
 }

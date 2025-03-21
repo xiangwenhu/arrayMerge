@@ -29,7 +29,7 @@ export const scoresInfo = Array.from({ length: 2 }, (val, index) => {
 
 
 const arr = mergeArray(usersInfo, scoresInfo, {
-    sourceKey: () => "uid",
+    sourceKey: () => [],
     enableLog: true,
     sourceKeyMapping: {
         "score": "a.c.d.s",

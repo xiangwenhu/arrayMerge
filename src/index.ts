@@ -1,4 +1,4 @@
-export { mergeObject } from "./object";
-export { mergeArray } from "./array"
+export { mergeObject, mergeObjectHOC } from "./object";
+export { mergeArray, mergeArrayHOC } from "./array"
 
 
