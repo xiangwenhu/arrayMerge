@@ -1,7 +1,7 @@
 import { MergeBaseClass } from "./MergeBaseClass";
 import { SourceKeyMapping } from "./types";
 import { isObject, toMappingItemList } from "./utils";
-import { getOwnPropertyKeyList, getProperty, setProperty } from "./utils/object";
+import { getOwnPropertyKeys, getProperty, setProperty } from "./utils/object";
 
 /**
  * 合并对象生成新的对象
@@ -21,7 +21,7 @@ export function mergeObject<T = any, S = any, R extends T = T>(
 
     let mapping = toMappingItemList(obj2Mapping);
     if (mapping === undefined) {
-        mapping = getOwnPropertyKeyList(obj2).map(key => [key, key])
+        mapping = getOwnPropertyKeys(obj2).map(key => [key, key])
     }
     for (let i = 0; i < mapping.length; i++) {
         const mappingItem = mapping[i];

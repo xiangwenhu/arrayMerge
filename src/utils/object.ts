@@ -33,7 +33,7 @@ function baseAssignValue(object: any, key: PropertyKey, value: any) {
  * @param defaultValue 
  * @returns 
  */
-function getPropertyInner<T extends ObjectRecord>(object: T, property: PropertyKey, defaultValue: any = undefined) {
+function getPropertyByKey<T extends ObjectRecord>(object: T, property: PropertyKey, defaultValue: any = undefined) {
     if (!isObject(object)) {
         return defaultValue;
     }
@@ -75,7 +75,7 @@ export function getProperty<T extends ObjectRecord>(object: T, paths: PropertyKe
     let result = object;
     const len = keys.length;
     for (let index = 0; index < len; index++) {
-        result = getPropertyInner(result, keys[index])
+        result = getPropertyByKey(result, keys[index])
         // 不是最后一个
         if (index != len - 1) {
             // 不是对象，直接返回
@@ -95,7 +95,7 @@ export function getProperty<T extends ObjectRecord>(object: T, paths: PropertyKe
  * @param value 
  * @returns 
  */
-function setPropertyInner(object: Object, property: PropertyKey, value: any = undefined) {
+function setPropertyByKey(object: Object, property: PropertyKey, value: any = undefined) {
 
     if (!isObject(object)) {
         return object;
@@ -147,17 +147,17 @@ export function setProperty<T extends ObjectRecord>(object: T, paths: PropertyKe
 
 
         if (index === len - 1) { // 最后一个，直接设值
-            setPropertyInner(nested, key, value)
+            setPropertyByKey(nested, key, value)
         } else {
             // 取值
-            objValue = getPropertyInner(nested, key)
+            objValue = getPropertyByKey(nested, key)
             if (isObject(objValue)) { // 是对象，继续
                 nested = objValue;
                 continue;
             } else {
                 // 不是对象，判断下一个key的是不是索引，如果是创建数组，反之创建对象
                 const val = (isIndex(keys[index + 1]) ? [] : {});
-                setPropertyInner(nested, key, val)
+                setPropertyByKey(nested, key, val)
                 nested = val;
             }
         }
@@ -166,7 +166,7 @@ export function setProperty<T extends ObjectRecord>(object: T, paths: PropertyKe
 }
 
 
-export function getOwnPropertyKeyList(object: any) {
+export function getOwnPropertyKeys(object: any) {
     let obj = Object(object);
 
     const list: PropertyKey[] = Object.getOwnPropertyNames(obj);

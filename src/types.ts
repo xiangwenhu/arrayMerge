@@ -1,7 +1,7 @@
 export type ObjectRecord = Record<PropertyKey, any>;
 
-export interface GetKeyFunction {
-    (data?: any): PropertyKeyOrPaths
+export interface GetKeyFunction<D = any> {
+    (data?: D): PropertyKeyOrPaths
 }
 
 export type PropertyKeyOrPaths = PropertyKey | PropertyKey[];

@@ -100,8 +100,19 @@ export function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>
         walkCounts++
 
         if (walkCounts > maxWalkCount) {
-            console.error(`mergeArray: 遍历次数超过最大遍历次数 ${maxWalkCount}, 终止遍历，请检查程序逻辑`);
+            if (enableLog) {
+                console.error(`mergeArray: 遍历次数超过最大遍历次数 ${maxWalkCount}, 终止遍历，请检查程序逻辑`);
+            }
             break;
+        }
+
+        if (hitCounts >= sourceLen) {
+            if (enableLog) {
+                console.log(`mergeArray:: sourceArr (${sourceLen}) 已遍历完, 直接赋值索引为${index}的数据项`);
+            }
+            resultArr[index] = tempTItem;
+            iterator.next()
+            continue;
         }
 
         tempTItem = targetArr[index];
@@ -129,12 +140,7 @@ export function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>
         }
         resultArr[index] = mergeObject(tempTItem, tempSItem, mapping);
         hitCounts++
-        if (hitCounts >= sourceLen) {
-            console.log(`mergeArray:: sourceArr (${sourceLen}) 已遍历完, 直接复制第${index + 1}项`);
-            resultArr[index] = tempTItem;
-            iterator.next()
-            continue;
-        }
+
         iterator.next()
     }
     if (enableLog) {

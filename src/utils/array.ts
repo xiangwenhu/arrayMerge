@@ -8,8 +8,8 @@ import { getProperty, setProperty } from "./object";
  * @param key PropertyKey 或者 PropertyKey列表
  * @returns 
  */
-export function arrayToRecord<T extends Record<PropertyKey, T>>(arr: T[], key: PropertyKeyOrPaths | GetKeyFunction) {
-    const keyExtractFun = (isFunction(key) ? key : () => key) as GetKeyFunction;
+export function arrayToRecord<T>(arr: T[], key: PropertyKeyOrPaths | GetKeyFunction<T>) {
+    const keyExtractFun = (isFunction(key) ? key : () => key) as GetKeyFunction<T>;
 
     const result: T = arr.reduce((obj: Record<PropertyKey, T>, cur: T) => {
         const keyProperty = keyExtractFun(cur);
@@ -24,4 +24,3 @@ export function arrayToRecord<T extends Record<PropertyKey, T>>(arr: T[], key: P
 
     return result;
 }
-
