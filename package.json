@@ -1,14 +1,16 @@
 {
   "name": "array-object-merge",
-  "version": "0.0.1",
+  "version": "0.0.1003",
   "description": "不问属性路径深浅，顺序遍历，倒叙遍历都支持，高效合并数据方案",
-  "main": "dist/index/index.js",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "typing": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run clear && tsc && npm run copy",
+    "clear": "ts-node ./scripts/clear.ts",
     "pack": "npm run build && npm pack",
-    "pub": "npm run build && npm publish"
+    "pub": "npm run build && npm publish",
+    "copy": "ts-node ./scripts/copy.ts"
   },
   "author": "xiangwen hu",
   "license": "ISC",
@@ -17,6 +19,7 @@
   ],
   "devDependencies": {
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "@types/node": "^20.10.0"
   }
 }

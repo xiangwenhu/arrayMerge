@@ -1,15 +1,27 @@
-import { isPropertyKey } from ".";
+import { GetKeyFunction, PropertyKeyOrPaths } from "../types";
+import { isFunction, isValidKeyOrPaths } from ".";
 import { getProperty, setProperty } from "./object";
 
-export function arrayToRecord<T extends Record<PropertyKey, T>>(arr: T[], getKeyFun: (data: T) => PropertyKey) {
+/**
+ * 数组转Record
+ * @param arr 数组
+ * @param key PropertyKey 或者 PropertyKey列表
+ * @returns 
+ */
+export function arrayToRecord<T extends Record<PropertyKey, T>>(arr: T[], key: PropertyKeyOrPaths | GetKeyFunction) {
+    const keyExtractFun = (isFunction(key) ? key : () => key) as GetKeyFunction;
+
     const result: T = arr.reduce((obj: Record<PropertyKey, T>, cur: T) => {
-        const key = getKeyFun(cur);
-        if (isPropertyKey(key)) {
-            const keyValue = getProperty(cur, key);
-            setProperty(obj, keyValue, cur);
+        const keyProperty = keyExtractFun(cur);
+        if (isValidKeyOrPaths(keyProperty)) {
+            const keyValue = getProperty(cur, keyProperty);
+            if (isValidKeyOrPaths(keyValue)) {
+                setProperty(obj, keyValue, cur);
+            }
         }
         return obj;
     }, Object.create(null));
+
     return result;
 }
 

@@ -1,4 +1,4 @@
-import { getPropertyByKeys } from "../../src/utils/object";
+import { getProperty } from "../../src/utils/object";
 
 
 const symbolA = Symbol.for("a");
@@ -23,6 +23,6 @@ const obj = {
 };
 
 
-const result = getPropertyByKeys(obj, ["a.b", 0, symbolA])
+const result = getProperty(obj, ["a.b", 0, symbolA])
 
 console.log(result);

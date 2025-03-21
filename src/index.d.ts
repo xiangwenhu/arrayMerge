@@ -1,8 +1,5 @@
-export type ObjectRecord = Record<PropertyKey, any>;
 
-export interface GetKeyFunction {
-    (data?: any): PropertyKeyOrPaths
-}
+export type ObjectRecord = Record<PropertyKey, any>;
 
 export type PropertyKeyOrPaths = PropertyKey | PropertyKey[];
 
@@ -12,17 +9,7 @@ export type KeyMappingMap = Record<PropertyKey, PropertyKey>;
 
 export type SourceKeyMapping = KeyMappingMap | KeyMappingItem[];
 
-
-
-export interface MergeObjectOption {
-    newItem?: boolean;
-    /**
-     * 对象的键值映射关系
-     */
-    keyMapping?: SourceKeyMapping;
-}
-
-export interface MergeArrayOptions<S = any, T = any> {
+export interface MergeOptions<S = any, T = any> {
     /**
      * 降序
      */
@@ -53,3 +40,7 @@ export interface MergeArrayOptions<S = any, T = any> {
      */
     newItem?: boolean;
 }
+
+
+export declare function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>(targetArr?: T[], sourceArr?: S[], options?: MergeOptions<S, T>): R[];
+

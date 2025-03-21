@@ -1,3 +1,5 @@
+import { KeyMappingItem, SourceKeyMapping } from "src/types";
+
 const INFINITY = 1 / 0;
 
 export function isObject(value: any) {
@@ -39,7 +41,7 @@ export function isNumber(value: any) {
 }
 
 
-export function toKey(value) {
+export function toKey(value: any) {
     if (typeof value == 'string' || isSymbol(value)) {
         return value;
     }
@@ -50,5 +52,19 @@ export function toKey(value) {
 
 export function isPropertyKey(key: any) {
     return isString(key) || isNumber(key) || isSymbol(key)
+}
 
+export function isValidKeyOrPaths(key: any) {
+    if (Array.isArray(key)) {
+        return key.every(k => isPropertyKey(k))
+    }
+    return isPropertyKey(key);
+}
+
+export function toMappingItemList(mapping: SourceKeyMapping): KeyMappingItem[] | undefined {
+    if (Array.isArray(mapping)) return mapping;
+    if (isObject(mapping)) {
+        return Object.keys(mapping).map(key => ([key, mapping[key]]))
+    }
+    return undefined;
 }

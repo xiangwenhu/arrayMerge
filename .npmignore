@@ -1,8 +1,6 @@
-node_modules
 .vscode
-.gitignore
+node_modules
+scripts
 src
-dist/test
-tsconfig.json
-docs
-assets
+tests
+.gitignore

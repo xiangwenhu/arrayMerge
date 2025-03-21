@@ -1,8 +1,9 @@
-import { KeyMappingItem, ObjectRecord } from "src/types";
 import { isFunction, isIndex, isNumber, isObject, isSymbol, toKey } from ".";
-import { stringToPath } from "./string"
+import { ObjectRecord } from "../types";
+import { stringToPath } from "./string";
 
 /**
+   * https://github.com/lodash/lodash/blob/main/dist/lodash.core.js
    * The base implementation of `assignValue` and `assignMergeValue` without
    * value checks.
    *
@@ -25,13 +26,14 @@ function baseAssignValue(object: any, key: PropertyKey, value: any) {
 }
 
 /**
+ * https://github.com/lodash/lodash/blob/main/dist/lodash.core.js
  * 获取对象属性
  * @param obj 
  * @param property 
  * @param defaultValue 
  * @returns 
  */
-export function getProperty<T extends ObjectRecord>(object: T, property: PropertyKey, defaultValue: any = undefined) {
+function getPropertyInner<T extends ObjectRecord>(object: T, property: PropertyKey, defaultValue: any = undefined) {
     if (!isObject(object)) {
         return defaultValue;
     }
@@ -63,15 +65,17 @@ export function getProperty<T extends ObjectRecord>(object: T, property: Propert
 
 
 
-export function getPropertyByKeys<T extends ObjectRecord>(object: T, keys: PropertyKey[], defaultValue: any = undefined) {
+export function getProperty<T extends ObjectRecord>(object: T, paths: PropertyKey | PropertyKey[], defaultValue: any = undefined) {
     if (!isObject(object)) {
         return defaultValue;
     }
 
+    const keys = Array.isArray(paths) ? paths : [paths]
+
     let result = object;
     const len = keys.length;
     for (let index = 0; index < len; index++) {
-        result = getProperty(result, keys[index])
+        result = getPropertyInner(result, keys[index])
         // 不是最后一个
         if (index != len - 1) {
             // 不是对象，直接返回
@@ -84,13 +88,14 @@ export function getPropertyByKeys<T extends ObjectRecord>(object: T, keys: Prope
 
 
 /**
+ * https://github.com/lodash/lodash/blob/main/dist/lodash.core.js
  * 设置属性值
  * @param obj 
  * @param property 
  * @param value 
  * @returns 
  */
-export function setProperty(object: Object, property: PropertyKey, value: any = undefined) {
+function setPropertyInner(object: Object, property: PropertyKey, value: any = undefined) {
 
     if (!isObject(object)) {
         return object;
@@ -129,10 +134,12 @@ export function setProperty(object: Object, property: PropertyKey, value: any = 
     return result;
 }
 
-export function setPropertyByKeys<T extends ObjectRecord>(object: T, keys: PropertyKey[], value: any = undefined) {
+export function setProperty<T extends ObjectRecord>(object: T, paths: PropertyKey | PropertyKey[], value: any = undefined) {
     if (!isObject(object)) {
         return object;
     }
+    const keys = Array.isArray(paths) ? paths : [paths]
+
     const result = object, len = keys.length;
     let nested: any = object, objValue: any;
     for (let index = 0; index < len; index++) {
@@ -140,17 +147,17 @@ export function setPropertyByKeys<T extends ObjectRecord>(object: T, keys: Prope
 
 
         if (index === len - 1) { // 最后一个，直接设值
-            setProperty(nested, key, value)
+            setPropertyInner(nested, key, value)
         } else {
             // 取值
-            objValue = getProperty(nested, key)
+            objValue = getPropertyInner(nested, key)
             if (isObject(objValue)) { // 是对象，继续
                 nested = objValue;
                 continue;
             } else {
                 // 不是对象，判断下一个key的是不是索引，如果是创建数组，反之创建对象
                 const val = (isIndex(keys[index + 1]) ? [] : {});
-                setProperty(nested, key, val)
+                setPropertyInner(nested, key, val)
                 nested = val;
             }
         }
@@ -158,52 +165,10 @@ export function setPropertyByKeys<T extends ObjectRecord>(object: T, keys: Prope
     return result;
 }
 
-/**
- * 提取属性生成新的对象
- */
-function extractObject(object: Object, mapping: KeyMappingItem[] | undefined = undefined,) {
 
-    if (!isObject(object)) {
-        return object;
-    }
+export function getOwnPropertyKeyList(object: any) {
+    let obj = Object(object);
 
-    const ret = Object.create(null);
-    // 这种情况，不会复制原型上的属性
-    if (!Array.isArray(mapping)) {
-        return { ...ret, ...object }
-    }
-
-    for (let i = 0; i < mapping.length; i++) {
-        const mappingItem = mapping[i];
-        const sKey = mappingItem[0];
-        const tKey = mappingItem[1];
-        const val = getPropertyByKeys(object, Array.isArray(sKey) ? sKey : [sKey]);
-        setPropertyByKeys(ret, Array.isArray(tKey) ? tKey : [tKey], val)
-    }
-    return ret;
-}
-
-
-/**
- * 合并对象生成新的对象
- * @param obj1 
- * @param obj2 
- * @param mapping 
- * @param mapping 
- * @returns 
- */
-export function mergeObject<T = any, S = any, R = any>(
-    obj1: T,
-    obj2: S,
-    obj1Mapping: KeyMappingItem[] | undefined = undefined,
-    obj2Mapping: KeyMappingItem[] | undefined = undefined
-): R {
-
-    const ret = Object.create(null);
-
-    Object.assign(ret, extractObject(obj1, obj1Mapping));
-
-    Object.assign(ret, extractObject(obj2, obj2Mapping));
-
-    return ret;
+    const list: PropertyKey[] = Object.getOwnPropertyNames(obj);
+    return list.concat(Object.getOwnPropertySymbols(obj))
 }
