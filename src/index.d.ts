@@ -1,7 +1,7 @@
 export type ObjectRecord = Record<PropertyKey, any>;
 
-export interface GetKeyFunction {
-    (data?: any): PropertyKeyOrPaths
+export interface GetKeyFunction<D = any> {
+    (data?: D): PropertyKeyOrPaths
 }
 
 export type PropertyKeyOrPaths = PropertyKey | PropertyKey[];
@@ -61,7 +61,6 @@ export interface MergeBaseClassOptions {
     mergeMethod: Function
 }
 
-
 export declare class MergeBaseClass<M = any, O = any> {
     private options;
     constructor(options: MergeBaseClassOptions);
@@ -69,6 +68,7 @@ export declare class MergeBaseClass<M = any, O = any> {
     push(item: M, mapping?: O): this;
     merge(): any;
 }
+
 
 /**
  * 合并对象生成新的对象
@@ -86,7 +86,6 @@ export declare function mergeObject<T = any, S = any, R extends T = T>(object1: 
 export declare function mergeObjectHOC(obj: any): MergeBaseClass<Object, SourceKeyMapping>;
 
 
-
 /**
  * 合并数组生成新的数组
  * @param targetArr 目标数组
@@ -101,5 +100,3 @@ export declare function mergeArray<S = ObjectRecord, T = ObjectRecord, R = Objec
  * @returns
  */
 export declare function mergeArrayHOC(array: any[]): MergeBaseClass<Object[], MergeArrayOptions<any, any>>;
-
-

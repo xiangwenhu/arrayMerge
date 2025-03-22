@@ -13,6 +13,21 @@ export type KeyMappingMap = Record<PropertyKey, PropertyKey>;
 export type SourceKeyMapping = KeyMappingMap | KeyMappingItem[];
 
 
+/**
+ * 遍历模式
+ */
+export enum EnumTraverseMode {
+    /**
+     * 从前往后
+     */
+    Forward = 1,
+    /**
+     * 从后往前
+     */
+    Backward = 2
+}
+
+
 
 export interface MergeObjectOption {
     newItem?: boolean;
@@ -26,7 +41,7 @@ export interface MergeArrayOptions<S = any, T = any> {
     /**
      * 降序
      */
-    desc?: boolean;
+    mode?: EnumTraverseMode;
     /**
      * 源键, 默认值 id
      */

@@ -1,6 +1,6 @@
 import { MergeBaseClass } from "./MergeBaseClass";
 import { mergeObject } from "./object";
-import { GetKeyFunction, MergeArrayOptions, ObjectRecord } from "./types";
+import { EnumTraverseMode, GetKeyFunction, MergeArrayOptions, ObjectRecord } from "./types";
 import { isFunction, isPropertyKey, isValidKeyOrPaths, toMappingItemList } from "./utils";
 import { arrayToRecord } from "./utils/array";
 import { getProperty } from "./utils/object";
@@ -8,7 +8,7 @@ import { getProperty } from "./utils/object";
 const DEFAULT_MERGE_OPTIONS: MergeArrayOptions = {
     sourceKey: "id",
     targetKey: undefined,
-    desc: false,
+    mode: EnumTraverseMode.Forward,
     sourceKeyMapping: undefined,
     maxWalkCount: 1000,
     enableLog: false,
@@ -23,12 +23,12 @@ const DEFAULT_MERGE_OPTIONS: MergeArrayOptions = {
  * @param desc 
  * @returns 
  */
-function getIterator(min: number, max: number, desc: boolean) {
+function getIterator(min: number, max: number, isBackward: boolean) {
 
-    let start = desc ? max : min;
-    let end = desc ? min : max;
+    let start = isBackward ? max : min;
+    let end = isBackward ? min : max;
 
-    if (desc) {
+    if (isBackward) {
         return {
             hasNext() {
                 return start >= end
@@ -68,7 +68,7 @@ export function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>
         return targetArr as any;
     }
 
-    let { targetKey, sourceKey, enableLog, desc, sourceKeyMapping, maxWalkCount, newItem }: MergeArrayOptions = { ...DEFAULT_MERGE_OPTIONS, ...options };
+    let { targetKey, sourceKey, enableLog, mode, sourceKeyMapping, maxWalkCount, newItem }: MergeArrayOptions = { ...DEFAULT_MERGE_OPTIONS, ...options };
 
     if (!isValidKeyOrPaths(sourceKey) && !isFunction(sourceKey)) {
         console.error("无效的sourceKey");
@@ -90,21 +90,25 @@ export function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>
     const sourceLen = sourceArr.length, targetLen = targetArr.length;
     let hitCounts = 0, walkCounts = 0, resultArr = [], tempTItem;
 
-    const iterator = getIterator(0, targetLen - 1, desc);
+    const iterator = getIterator(0, targetLen - 1, mode === EnumTraverseMode.Backward);
 
     const mapping = toMappingItemList(sourceKeyMapping);
 
     while (iterator.hasNext()) {
-
         const index = iterator.current;
-        walkCounts++
+        tempTItem = targetArr[index];
 
-        if (walkCounts > maxWalkCount) {
+
+        if (walkCounts >= maxWalkCount) {
             if (enableLog) {
                 console.error(`mergeArray: 遍历次数超过最大遍历次数 ${maxWalkCount}, 终止遍历，请检查程序逻辑`);
             }
-            break;
+            resultArr[index] = tempTItem;
+            iterator.next()
+            continue;
         }
+
+        walkCounts++;
 
         if (hitCounts >= sourceLen) {
             if (enableLog) {
@@ -115,7 +119,6 @@ export function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>
             continue;
         }
 
-        tempTItem = targetArr[index];
         // 不更改原对象，需deepClone??
         tempTItem = newItem ? { ...tempTItem } : tempTItem;
 
