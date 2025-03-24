@@ -1,7 +1,7 @@
 {
-    "name": "array-object-merge",
-    "version": "0.0.1003",
-    "description": "不问属性路径深浅，顺序遍历，倒叙遍历都支持，高效合并数据方案",
+    "name": "merge-js",
+    "version": "0.0.1",
+    "description": "不问属性路径深浅，支持顺序倒叙遍历，支持属性映射的高效数据合并方案",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "typing": "./dist/index.d.ts",

@@ -4,7 +4,7 @@ import { isObject, toMappingItemList } from "./utils";
 import { getOwnPropertyKeys, getProperty, setProperty } from "./utils/object";
 
 /**
- * 合并对象生成新的对象
+ * 合并两个对象生成新的对象，支持属性映射
  * @param object1 
  * @param object2 
  * @param obj2Mapping 
@@ -47,7 +47,7 @@ export function mergeObject<T = any, S = any, R extends T = T>(
 }
 
 /**
- * 合并多个对象的HOC
+ * 合并多个对象的HOC，支持属性映射
  * @param obj 
  * @returns 
  */
@@ -57,4 +57,23 @@ export function mergeObjectHOC(obj: any) {
     });
     hoc.push(obj);
     return hoc
+}
+
+
+/**
+ * 多个对象合并，不支持属性映射
+ * @param objectList 
+ * @returns 
+ */
+export function mergeObjectForce(...objectList: any[]): any {
+    if (!Array.isArray(objectList) || objectList.length <= 1) {
+        return objectList
+    }
+
+    const hoc = new MergeBaseClass<Object, SourceKeyMapping | undefined>({
+        mergeMethod: mergeObject
+    });
+    objectList.forEach(arr => hoc.push(arr))
+
+    return hoc.merge()
 }

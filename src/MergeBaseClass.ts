@@ -7,8 +7,8 @@ export class MergeBaseClass<M = any, O = any> {
 
     private list: [M, O][] = [];
 
-    push(item: M, mapping?: O) {
-        this.list.push([item, mapping]);
+    push(item: M, options?: O) {
+        this.list.push([item, options]);
         return this;
     }
 
@@ -20,8 +20,8 @@ export class MergeBaseClass<M = any, O = any> {
 
         let result: any = list[0][0];
         for (let i = 1; i < this.list.length; i++) {
-            const [item, mapping] = this.list[i];
-            result = mergeMethod(result, item, mapping)
+            const [item, options] = this.list[i];
+            result = mergeMethod(result, item, options)
         }
         return result;
     }

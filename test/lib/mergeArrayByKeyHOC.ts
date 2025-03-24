@@ -1,5 +1,5 @@
 import assert from "assert"
-import { mergeArrayHOC } from "../../src"
+import { mergeArrayByKeyHOC } from "../../src"
 
 const dataFactory = {
     getData() {
@@ -35,14 +35,14 @@ const dataFactory = {
     }
 }
 
-describe('mergeArrayHOC', function () {
+describe('mergeArrayByKeyHOC', function () {
 
 
     describe('#基础属性合并', function () {
 
         const { arr1, arr2, arr3 } = dataFactory.getData();
 
-        const result = mergeArrayHOC(arr1)
+        const result = mergeArrayByKeyHOC(arr1)
             .push(arr2)
             .push(arr3)
             .merge();

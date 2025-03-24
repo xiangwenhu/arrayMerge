@@ -1,170 +1,52 @@
-import assert from "assert";
-import { mergeArray } from "../../src";
-
-const symbolUid = Symbol.for("uid");
-
+import assert from "assert"
+import { mergeArray } from "../../src"
 
 const dataFactory = {
     getData() {
-        const users = Array.from({ length: 5 }, (val, index) => {
-            return {
-                uid: `${index + 1}`,
-                index: index,
-                name: `user-name-${index}`,
-                age: index + 10,
-                avatar: `http://www.avatar.com/${index + 1}`
-            }
-        });
+        const arr1 = [{
+            idx: 1,
+            name: 'name'
+        }, {
+            idx: 2,
+            name: "nam2"
+        }]
 
+        const arr2 = [{
+            idx: 1,
+            name: 'arr2-name',
+            age: 18
+        }]
 
-        const scores = Array.from({ length: 6 }, (val, index) => {
-            return {
-                [symbolUid]: `${index + 2}`,
-                index: index,
-                score: ~~(Math.random() * 10000),
-                comments: ~~(Math.random() * 10000),
-                stars: ~~(Math.random() * 1000)
-            }
-        });
+        const arr3 = [{
 
-        return {
-            users,
-            scores
-        }
-    },
-
-    getDeepKeyData() {
-        const users = Array.from({ length: 5 }, (val, index) => {
-            return {
-                deepKey: {
-                    uid: `${index + 1}`,
-                },
-                index: index,
-                name: `user-name-${index}`,
-                age: index + 10,
-                avatar: `http://www.avatar.com/${index + 1}`
-            }
-        });
-
-        const symbolUid = Symbol.for("uid");
-
-        const scores = Array.from({ length: 6 }, (val, index) => {
-            return {
-                deepKey: {
-                    [symbolUid]: `${index + 2}`,
-                },
-                index: index,
-                score: ~~(Math.random() * 10000),
-                comments: ~~(Math.random() * 10000),
-                stars: ~~(Math.random() * 1000)
-            }
-        });
+        }, {
+            idx: 2,
+            name: "arr3-name",
+            sex: "男"
+        }]
 
         return {
-            users,
-            scores
+            arr1,
+            arr2,
+            arr3
         }
     }
 }
 
-
-
-
 describe('mergeArray', function () {
-    describe('#newItem:false', function () {
 
-        const { users, scores } = dataFactory.getData();
 
-        const result = mergeArray(users, scores, {
-            sourceKey: symbolUid,
-            targetKey: "uid",
-            enableLog: false,
-            newItem: false
-        });
+    describe('#基础属性合并', function () {
 
-        it('合并后的结果第一项等于targetArr第一项', function () {
-            assert.equal(users[0], result[0]);
-        });
-    });
+        const { arr1, arr2, arr3 } = dataFactory.getData();
 
-    describe('#newItem:true', function () {
+        const result = mergeArray(arr1, arr2, arr3)
 
-        const { users, scores } = dataFactory.getData();
+        console.log(result);
 
-        const result = mergeArray(users, scores, {
-            sourceKey: symbolUid,
-            targetKey: "uid",
-            enableLog: false,
-            newItem: true
-        });
-
-        it('合并后的结果第一项不等于targetArr第一项', function () {
-            assert.notEqual(users[0], result[0]);
+        it('#属性正常复制', function () {
+            assert.equal(result[0].name, 'arr2-name');
+            assert.equal(result[1].sex, "男");
         });
     });
-
-    describe('#maxWalkCount', function () {
-
-        const { users, scores } = dataFactory.getData();
-
-        const result = mergeArray(users, scores, {
-            sourceKey: symbolUid,
-            targetKey: "uid",
-            enableLog: false,
-            newItem: false,
-            maxWalkCount: 1
-        });
-
-        it('索引值为1的对象未合并到属性', function () {
-            assert.equal(result[1].comments, undefined);
-        });
-    });
-
-
-
-    describe("#复杂的sourceKey和targetKey", function () {
-
-        const { users, scores } = dataFactory.getDeepKeyData();
-
-        const result = mergeArray(users, scores, {
-            sourceKey: ["deepKey", symbolUid],
-            targetKey: "deepKey.uid",
-            enableLog: false,
-            sourceKeyMapping: {
-                "score": "a.c.d.s",
-                "comments": "data.comments",
-                "stars": "stars"
-            }
-        });
-
-        it('sourceKey:["deepKey", symbolUid]', function () {
-            const m1 = result[1];
-            assert.equal(typeof m1.data.comments === "number", true);
-        });
-    });
-
-    describe(`#sourceKeyMapping`, function () {
-
-        const { users, scores } = dataFactory.getDeepKeyData();
-
-        const result = mergeArray(users, scores, {
-            sourceKey: ["deepKey", symbolUid],
-            targetKey: "deepKey.uid",
-            enableLog: false,
-            sourceKeyMapping: {
-                "score": "a.c.d.s",
-                "comments": "data.comments",
-                "stars": "stars"
-            }
-        });
-
-        it(`"comments"=>"data.comments"`, function () {
-            const m1 = result[1];
-            assert.equal(typeof m1.data.comments === "number", true);
-        });
-    });
-});
-
-
-
-
+})

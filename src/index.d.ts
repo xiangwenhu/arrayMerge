@@ -69,9 +69,8 @@ export declare class MergeBaseClass<M = any, O = any> {
     merge(): any;
 }
 
-
 /**
- * 合并对象生成新的对象
+ * 合并两个对象生成新的对象，支持属性映射
  * @param object1
  * @param object2
  * @param obj2Mapping
@@ -79,24 +78,36 @@ export declare class MergeBaseClass<M = any, O = any> {
  */
 export declare function mergeObject<T = any, S = any, R extends T = T>(object1: T, object2: S, obj2Mapping?: SourceKeyMapping | undefined): R;
 /**
- * 合并多个对象的HOC
+ * 合并多个对象的HOC，支持属性映射
  * @param obj
  * @returns
  */
 export declare function mergeObjectHOC(obj: any): MergeBaseClass<Object, SourceKeyMapping>;
+/**
+ * 多个对象合并，不支持属性映射
+ * @param objectList
+ * @returns
+ */
+export declare function mergeObjectForce(...objectList: any[]): any;
 
 
 /**
- * 合并数组生成新的数组
+ * 根据两个数组的key合并数据，支持属性映射
  * @param targetArr 目标数组
  * @param sourceArr 需要被合并的数组
  * @param options   选项
  * @returns
  */
-export declare function mergeArray<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>(targetArr?: T[], sourceArr?: S[], options?: MergeArrayOptions<S, T>): R[];
+export declare function mergeArrayByKey<S = ObjectRecord, T = ObjectRecord, R = ObjectRecord>(targetArr?: T[], sourceArr?: S[], options?: MergeArrayOptions<S, T>): R[];
 /**
- * 合并多个数组的HOC
+ * 根据key合并数组的HOC，支持属性映射
  * @param array
  * @returns
  */
-export declare function mergeArrayHOC(array: any[]): MergeBaseClass<Object[], MergeArrayOptions<any, any>>;
+export declare function mergeArrayByKeyHOC(array: any[]): MergeBaseClass<Object[], MergeArrayOptions<any, any>>;
+/**
+ * 多个数组属性覆盖式的合并，不支持属性映射
+ * @param arrayList
+ * @returns
+ */
+export declare function mergeArray(...arrayList: any[]): any[];

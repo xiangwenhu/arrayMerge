@@ -24,7 +24,7 @@
         "esModuleInterop": true,
         "allowUmdGlobalAccess": true,
         "experimentalDecorators": true,
-        "declaration": true,
+        "declaration": false,
         "lib": [
             "es5",
             "ES2015",
