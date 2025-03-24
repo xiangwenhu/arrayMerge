@@ -1,4 +1,4 @@
-# merge-js
+# merge-data-js
 **起因**: 服务端丢给前端2份数据，需要前端根据某种条件进行数据合并。离谱，问就是历史问题，改动成本大。   
 **目标**：通用合并，高效，适用性强。   
 
@@ -14,7 +14,7 @@
 ### mergeObject: 属性映射
 
 ```js
-import { mergeObject } from "merge-js"
+import { mergeObject } from "merge-data-js"
 
 const object1: any = {
     p1: "p1",
@@ -37,7 +37,7 @@ console.log("object1:", object1)
 
 ### mergeObject: 多级属性含Symbol映射
 ```typescript
-import { mergeObject } from "merge-js"
+import { mergeObject } from "merge-data-js"
 
 const symbolName = Symbol.for("name");
 
@@ -69,7 +69,7 @@ console.log("object1:", object1)
 ### mergeObject: 数组属性合并
 
 ```typescript
-import { mergeObject } from "merge-js"
+import { mergeObject } from "merge-data-js"
 
 const object1: any = {
     arr1: [{
@@ -96,7 +96,7 @@ console.log("object1:", object1)
 
 ### mergeObject: 数组属性映射
 ```typescript
-import { mergeObject } from "merge-js"
+import { mergeObject } from "merge-data-js"
 
 const object1: any = {
     arr1: [{
@@ -132,7 +132,7 @@ console.log("object1:", object1)
 ### mergeObjectHOC: 多个对象带映射的合并
 其映射能力和mergeObject一样，只不过支持多个对象合并。
 ```typescript
-import { mergeObjectHOC } from "merge-js";
+import { mergeObjectHOC } from "merge-data-js";
 
 const object1: any = {
     a: 'a'
@@ -163,7 +163,7 @@ console.log(result);
 ### mergeObjectForce
 不具备属性映射
 ```typescript
-import { mergeObjectForce } from "merge-js"
+import { mergeObjectForce } from "merge-data-js"
 
 const object1: any = {
     a: 'a'
@@ -188,7 +188,7 @@ console.log("result:", result);
 
 ### mergeArrayByKey: 多级属性 + 含Symbol + 映射
 ```typescript
-import { mergeArrayByKey } from "merge-js";
+import { mergeArrayByKey } from "merge-data-js";
 
 const symbolUid = Symbol.for("uid");
 const users = Array.from({ length: 1 }, (val, index) => {
@@ -245,7 +245,7 @@ console.log("result:", result);
 ### mergeArrayByKeyHOC
 其映射能力和 mergeArrayByKey 一样，只不过支持多个对象合并。
 ```typescript
-import { mergeArrayByKeyHOC } from "merge-js";
+import { mergeArrayByKeyHOC } from "merge-data-js";
 
 const arr1 = [{
     id: 1,
@@ -286,7 +286,7 @@ console.log("result:", result);
 
 ### mergeArray 
 ```typescript
-import { mergeArray } from "merge-js";
+import { mergeArray } from "merge-data-js";
 
 const arr1 = [{
     idx: 1,
