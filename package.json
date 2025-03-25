@@ -1,12 +1,58 @@
 {
     "name": "merge-data-js",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "不问属性路径深浅，支持顺序倒叙遍历，支持属性映射的高效数据合并方案",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "typing": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "require": "./dist/index.js"
+        },
+        "./mergeObject": {
+            "require": "./dist/object/mergeObject.js"
+        },
+        "./mergeObjectHOC": {
+            "require": "./dist/object/mergeObjectHOC.js"
+        },
+        "./mergeObjectForce": {
+            "require": "./dist/object/mergeObjectForce.js"
+        },
+        "./mergeArray": {
+            "require": "./dist/array/mergeArray.js"
+        },
+        "./mergeArrayByKey": {
+            "require": "./dist/array/mergeArrayByKey.js"
+        },
+        "./mergeArrayByKeyHOC": {
+            "require": "./dist/array/mergeArrayByKeyHOC.js"
+        }
+    },
+    "typesVersions": {
+        "*": {
+            "mergeObject": [
+                "./dist/object/mergeObject.d.ts"
+            ],
+            "mergeObjectHOC": [
+                "./dist/object/mergeObjectHOC.d.ts"
+            ],
+            "mergeObjectForce": [
+                "./dist/object/mergeObjectForce.d.ts"
+            ],
+            "mergeArray": [
+                "./dist/array/mergeArray.d.ts"
+            ],
+            "mergeArrayByKey": [
+                "./dist/array/mergeArrayByKey.d.ts"
+            ],
+            "mergeArrayByKeyHOC": [
+                "./dist/array/mergeArrayByKeyHOC.d.ts"
+            ]
+        }
+    },
     "scripts": {
         "build": "npm run clear && tsc && npm run copy",
+        "declaration": "tsc --project ./tsconfig-declaration.json",
         "build-only": "npm run clear && tsc",
         "clear": "ts-node ./scripts/clear.ts",
         "pack": "npm run build && npm pack",

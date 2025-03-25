@@ -1,7 +1,6 @@
-import { MergeBaseClass } from "./MergeBaseClass";
-import { SourceKeyMapping } from "./types";
-import { isObject, toMappingItemList } from "./utils";
-import { getOwnPropertyKeys, getProperty, setProperty } from "./utils/object";
+import { SourceKeyMapping } from "../types";
+import { isObject, toMappingItemList } from "../utils";
+import { getOwnPropertyKeys, getProperty, setProperty } from "../utils/object";
 
 /**
  * 合并两个对象生成新的对象，支持属性映射
@@ -10,7 +9,7 @@ import { getOwnPropertyKeys, getProperty, setProperty } from "./utils/object";
  * @param obj2Mapping 
  * @returns 
  */
-export function mergeObject<T = any, S = any, R extends T = T>(
+export default function mergeObject<T = any, S = any, R extends T = T>(
     object1: T,
     object2: S,
     obj2Mapping: SourceKeyMapping | undefined = undefined
@@ -44,36 +43,4 @@ export function mergeObject<T = any, S = any, R extends T = T>(
     }
 
     return obj1 as unknown as R;
-}
-
-/**
- * 合并多个对象的HOC，支持属性映射
- * @param obj 
- * @returns 
- */
-export function mergeObjectHOC(obj: any) {
-    const hoc = new MergeBaseClass<Object, SourceKeyMapping | undefined>({
-        mergeMethod: mergeObject
-    });
-    hoc.push(obj);
-    return hoc
-}
-
-
-/**
- * 多个对象合并，不支持属性映射
- * @param objectList 
- * @returns 
- */
-export function mergeObjectForce(...objectList: any[]): any {
-    if (!Array.isArray(objectList) || objectList.length <= 1) {
-        return objectList
-    }
-
-    const hoc = new MergeBaseClass<Object, SourceKeyMapping | undefined>({
-        mergeMethod: mergeObject
-    });
-    objectList.forEach(arr => hoc.push(arr))
-
-    return hoc.merge()
 }

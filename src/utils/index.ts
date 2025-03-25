@@ -1,4 +1,4 @@
-import { KeyMappingItem, SourceKeyMapping } from "src/types";
+import { KeyMappingItem, SourceKeyMapping } from "../types";
 
 const INFINITY = 1 / 0;
 

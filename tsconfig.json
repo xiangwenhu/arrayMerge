@@ -1,7 +1,7 @@
 {
     "exclude": [
-        "/tests",
-        "/scripts"
+        "./tests",
+        "./scripts"
     ],
     "include": [
         "./src"
@@ -24,7 +24,7 @@
         "esModuleInterop": true,
         "allowUmdGlobalAccess": true,
         "experimentalDecorators": true,
-        "declaration": false,
+        "declaration": true,
         "lib": [
             "es5",
             "ES2015",
