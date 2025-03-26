@@ -1,6 +1,6 @@
 {
     "name": "merge-data-js",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "不问属性路径深浅，支持顺序倒叙遍历，支持属性映射的高效数据合并方案",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
