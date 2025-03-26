@@ -167,8 +167,7 @@ export function setProperty<T extends ObjectRecord>(object: T, paths: PropertyKe
 
 
 export function getOwnPropertyKeys(object: any) {
-    let obj = Object(object);
-
-    const list: PropertyKey[] = Object.getOwnPropertyNames(obj);
-    return list.concat(Object.getOwnPropertySymbols(obj))
+    if (!isObject(object)) return [];
+    const list: PropertyKey[] = Object.getOwnPropertyNames(object);
+    return list.concat(Object.getOwnPropertySymbols(object))
 }

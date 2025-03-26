@@ -15,12 +15,14 @@ export default function mergeObject<T = any, S = any, R extends T = T>(
     obj2Mapping: SourceKeyMapping | undefined = undefined
 ): R {
 
-    const obj1 = Object(object1);
-    const obj2 = Object(object2);
+    if(!isObject(object1) || !isObject(object2)) {
+        return object1 as unknown as R;
+    }
+
 
     let mapping = toMappingItemList(obj2Mapping);
     if (mapping === undefined) {
-        mapping = getOwnPropertyKeys(obj2).map(key => [key, key])
+        mapping = getOwnPropertyKeys(object2).map(key => [key, key])
     }
     for (let i = 0; i < mapping.length; i++) {
         const mappingItem = mapping[i];
@@ -29,8 +31,8 @@ export default function mergeObject<T = any, S = any, R extends T = T>(
 
         const sKeyList = Array.isArray(sKey) ? sKey : [sKey];
 
-        const val2 = getProperty(obj2, sKeyList);
-        const val1 = getProperty(obj1, sKeyList);
+        const val2 = getProperty(object2, sKeyList);
+        const val1 = getProperty(object1, sKeyList);
         let val = val2;
 
         // 如果都是对象，合并
@@ -39,8 +41,8 @@ export default function mergeObject<T = any, S = any, R extends T = T>(
         }
 
         const tKeyList = Array.isArray(tKey) ? tKey : [tKey];
-        setProperty(obj1, tKeyList, val)
+        setProperty(object1, tKeyList, val)
     }
 
-    return obj1 as unknown as R;
+    return object1 as unknown as R;
 }
