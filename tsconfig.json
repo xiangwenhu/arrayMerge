@@ -1,6 +1,6 @@
 {
     "exclude": [
-        "./tests",
+        "./test",
         "./scripts"
     ],
     "include": [
